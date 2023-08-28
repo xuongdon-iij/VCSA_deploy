@@ -1,0 +1,42 @@
+{
+    "__version": "2.13.0",
+    "new_vcsa": {
+        "vc": {
+            "hostname": "{{ vc_mng.ip }}",
+            "username": "{{ vc_mng.user }}",
+            "password": "{{ vc_mng.password }}",
+            "deployment_network": "{{ nested_vc.portgroup }}",
+            "datacenter": "{{ vc_mng.datacenter }}",
+            "datastore": "{{ vc_mng.datastore }}",
+            "target": "{{ vc_mng.cluster }}"
+        },
+        "appliance": {
+            "thin_disk_mode": true,
+            "deployment_option": "{{ nested_vc.type }}",
+            "name": "{{ nested_vc.vm }}"
+        },
+        "network": {
+            "ip_family": "ipv4",
+            "mode": "static",
+            "system_name": "{{ nested_vc.hostname }}",
+            "ip": "{{ nested_vc.ip }}",
+            "prefix": "{{ nested_vc.prefix }}",
+            "gateway": "{{ nested_vc.gw }}",
+            "dns_servers": "{{ nested_vc.dns }}"
+        },
+        "os": {
+            "password": "{{ nested_vc.pass }}",
+            "ntp_servers": "{{ nested_vc.ntp }}",
+            "ssh_enable": true
+        },
+        "sso": {
+            "password": "{{ nested_vc.pass }}",
+            "domain_name": "vsphere.local"
+        }
+    },
+    "ceip": {
+        "settings": {
+            "ceip_enabled": false
+        }
+    }
+}
