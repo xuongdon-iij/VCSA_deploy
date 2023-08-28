@@ -1,0 +1,7 @@
+---
+- host: localhost
+  gather_facts: false
+  tasks:
+    - name: Deploy VCSA Appliance
+      incule_role:
+        name: deploy_vcsa
