@@ -41,12 +41,3 @@
         path: ../mnt/VCSA
         state: unmounted
       delegate_to: localhost
-
-- name: Result check for deployment of host power on
-  ansible.builtin.async_status:
-    jid: "{{ item.ansible_job_id }}"
-  register: job_result
-  until: job_result.finished
-  loop: "{{ hosts_power_on_result.results }}"
-  retries: 100
-  delay: 15
