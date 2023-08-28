@@ -5,6 +5,7 @@ jobs:
   build:
     runs-on: [seft-hosted]
     steps:
+      - uses: action/checkout@v2
       - name: "Gather info about vCenter settings"
         community.vmware.vmware_vcenter_settings_info:
           hostname: "vcenter199.lab.local"
