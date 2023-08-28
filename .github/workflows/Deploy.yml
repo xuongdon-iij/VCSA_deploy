@@ -2,7 +2,7 @@ name: Ansible Deploy
 on: 
     workflow_dispatch:
         inputs:
-          OS:
+          Server:
              type: choice
              description: 'OS: '
              required: true
@@ -10,3 +10,13 @@ on:
              - vCenter
              - ESXi
              - NSX-T
+jobs:    
+    build:
+      runs-on: [self-hosted]
+      steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+       
+      - if: github.event.inputs.Server == 'vCenter'
+        name: Run Ansible to deploy vCenter
+        run: cd ${PWD}/Ansible/vCenter/  && ansible-playbook main.yml
