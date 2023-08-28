@@ -11,5 +11,3 @@ jobs:
           username: "administrator@vsphere.local"
           password: ${{ secrests.VCENTER_TOKEN }}
         register: vcenter_settings_info
-        
-      
