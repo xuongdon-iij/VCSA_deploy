@@ -21,7 +21,7 @@
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      shell: sudo mount -o loop ../ISO/VCSA.iso ../mnt/VCSA
+      shell: sudo mount -o loop {{ vc_iso }} ../mnt/VCSA
       when: 
         - not _check_vcsa_deploy.stat.exists
 
