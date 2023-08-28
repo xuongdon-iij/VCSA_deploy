@@ -50,16 +50,3 @@
   loop: "{{ hosts_power_on_result.results }}"
   retries: 100
   delay: 15
-
-- name: Check if hosts are online
-  ansible.builtin.uri:
-    url: "https://{{ item.ip }}/ui/"
-    method: GET
-    status_code: 200
-    timeout: 2
-    validate_certs: false
-  retries: 60
-  delay: 10
-  register: result_host_check
-  until: result_host_check.status == 200
-  loop: "{{ nested_hosts }}"
