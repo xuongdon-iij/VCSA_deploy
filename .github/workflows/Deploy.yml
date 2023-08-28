@@ -1,0 +1,12 @@
+name: Ansible Deploy
+on: 
+    workflow_dispatch:
+        inputs:
+          OS:
+             type: choice
+             description: 'OS: '
+             required: true
+             options:
+             - vCenter
+             - ESXi
+             - NSX-T
