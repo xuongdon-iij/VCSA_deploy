@@ -62,4 +62,4 @@
 
     - name: Unmount VCSA ISO
         ansible.builtin.shell: umount "{{ vcsa_mount }}"
-      when: result_vc_exist
+      when: result_vc_exists
