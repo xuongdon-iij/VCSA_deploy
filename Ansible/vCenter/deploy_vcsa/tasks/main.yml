@@ -22,7 +22,7 @@
 
     - name: Mount VCSA ISO
       expect:
-        command: mount -o loop "{{ vc_iso }} {{ vcsa_mount }}"
+        command: "sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
         responses:
           ".*password.*": "$NESTED_VC_TOKEN\n"
       when: 
