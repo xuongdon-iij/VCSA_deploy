@@ -21,7 +21,7 @@
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      ansible.builtin.shell: sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }}
+      ansible.builtin.shell: sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }} && VMware1!
       when: 
         - not _check_vcsa_deploy.stat.exists
 
