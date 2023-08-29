@@ -19,4 +19,4 @@ jobs:
        
       - if: github.event.inputs.Server == 'vCenter'
         name: Run Ansible to deploy vCenter
-        run: cd ${PWD}/Ansible/vCenter/  && ansible-playbook run.yml
+        run: ansible-playbook Ansible/vCenter/run.yml
