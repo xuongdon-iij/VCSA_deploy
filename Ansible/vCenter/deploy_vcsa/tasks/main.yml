@@ -1,0 +1,43 @@
+---
+- name: Check if VCSA already exists so install steps can be skipped
+  ansible.builtin.uri:
+    url: "https://{{ nested_vc.ip }}/ui/"
+    method: GET
+    status_code: 200
+    timeout: 2
+    validate_certs: false
+  ignore_errors: true
+  register: vcenter_response
+
+- ansible.builtin.set_fact:
+    vcenter_exists: "{{ vcenter_response.status == 200 }}"
+
+- name: Install vCenter and configure tasks
+  when: not vcenter_exists
+  block:
+    - name: Check VCSA ISO Path Exists
+      stat:
+        path: ../mnt/VCSA/vcsa-cli-installer/lin64/vcsa-deploy
+      register: _check_vcsa_deploy
+
+    - name: Mount VCSA ISO
+      shell: sudo mount -o loop {{ vc_iso }} ../mnt/VCSA
+      when: 
+        - not _check_vcsa_deploy.stat.exists
+
+    - name: Create VCSA config file
+      template:
+        src: ../templates/vcsa_deploy_on_vc.json.j2
+        dest: ../Deploy-info/xuong-vcsa.json
+        mode: '660'
+      delegate_to: localhost
+
+    - name: Deploy VCSA Appliance
+      shell: ../mnt/VCSA/vcsa-cli-installer/lin64/vcsa-deploy install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v ../Deploy-info/xuong-vcsa.json
+      register: vcenter_result
+
+    - name: Unmount VCSA ISO
+      mount:
+        path: ../mnt/VCSA
+        state: unmounted
+      delegate_to: localhost
