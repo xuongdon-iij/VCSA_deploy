@@ -21,7 +21,7 @@
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      ansible.builtin.shell: mount -o loop "{{ vc_iso }} {{ vcsa_mount }}"
+      ansible.builtin.shell: mount "{{ vc_iso }} {{ vcsa_mount }}"
       when: 
         - not _check_vcsa_deploy.stat.exists
 
