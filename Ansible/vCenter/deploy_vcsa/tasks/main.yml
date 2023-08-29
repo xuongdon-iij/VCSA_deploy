@@ -24,7 +24,7 @@
       expect:
         command: "sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
         responses:
-          ".*password.*": "$NESTED_VC_TOKEN\n"
+          ".*password.*": "{{ nested_vc.pass }}\n"
       when: 
         - not _check_vcsa_deploy.stat.exists
 
