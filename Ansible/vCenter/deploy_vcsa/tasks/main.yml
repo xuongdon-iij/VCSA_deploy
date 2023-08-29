@@ -33,7 +33,7 @@
       delegate_to: localhost
 
     - name: Deploy VCSA Appliance
-      ansible.builtin.shell: "{{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy" install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v "{{ templates_dir }}/xuong-vcsa.json"
+      ansible.builtin.shell: "{{ vcsa_mount }}"/vcsa-cli-installer/lin64/vcsa-deploy install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v "{{ templates_dir }}/xuong-vcsa.json"
       register: vcenter_result
 
     - name: Result check for deployment of vCenter task
