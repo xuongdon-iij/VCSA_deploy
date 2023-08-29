@@ -21,7 +21,7 @@
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      ansible.builtin.shell: sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }} && VMware1!
+      ansible.builtin.shell: mount -o loop {{ vc_iso }} {{ vcsa_mount }}
       when: 
         - not _check_vcsa_deploy.stat.exists
 
@@ -33,5 +33,5 @@
       delegate_to: localhost
 
     - name: Deploy VCSA Appliance
-      ansible.builtin.shell: sudo {{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v ../Deploy-info/xuong-vcsa.json
+      ansible.builtin.shell: sudo {{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v ../Deploy-info/xuong-vcsa.json && VMware1!
       register: vcenter_result
