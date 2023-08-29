@@ -6,6 +6,7 @@ vcsa_mount: '/home/ansible/ISO/VCSA'
 ntp_server: 192.168.138.195
 templates_dir: '/home/ansible/templates'
 disk_mode: 'thin'
+ansible_become_pass: '$NESTED_VC_TOKEN'
 
 #Main vCenter
 vc_mng:
