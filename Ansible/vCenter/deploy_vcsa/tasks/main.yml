@@ -26,7 +26,7 @@
         - not _check_vcsa_deploy.stat.exists
 
     - name: Create VCSA config file
-      template:
+      ansible.builtin.template:
         src: ../templates/vcsa_deploy_on_vc.json.j2
         dest: ../Deploy-info/xuong-vcsa.json
         mode: '660'
@@ -37,7 +37,7 @@
       register: vcenter_result
 
     - name: Unmount VCSA ISO
-      mount:
+      ansible.posix.mount:
         path: ../mnt/VCSA
         state: unmounted
       delegate_to: localhost
