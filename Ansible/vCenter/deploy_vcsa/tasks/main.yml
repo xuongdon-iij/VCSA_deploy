@@ -22,6 +22,7 @@
 
     - name: Mount VCSA ISO
       become: yes
+      become_pass: "{{ nested_vc.pass }}"
       shell: "mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
       when: 
         - not _check_vcsa_deploy.stat.exists
