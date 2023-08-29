@@ -22,8 +22,8 @@
 
     - name: Mount VCSA ISO
       ansible.posix.mount:
-        path: "{{ vcsa_mount }}"
-        src: "{{ vc_iso }}"
+        path: "{{ vc_iso }}"
+        src: "{{ vcsa_mount }}"
         state: "ephemeral"
       when:
         - not _check_vcsa_deploy.stat.exists
