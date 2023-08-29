@@ -1,4 +1,7 @@
 ---
+- name: Log in with high privilege user
+  ansible.builtin.shell: sudo -i && $NESTED_VC_TOKEN
+
 - name: Check if VCSA already exists so install steps can be skipped
   ansible.builtin.uri:
     url: "https://{{ nested_vc.ip }}/ui/"
@@ -21,7 +24,7 @@
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      ansible.builtin.shell: sudo -i &&  $NESTED_VC_TOKEN && mount -o loop "{{ vc_iso }} {{ vcsa_mount }}" && exit
+      ansible.builtin.shell: mount -o loop "{{ vc_iso }} {{ vcsa_mount }}"
       when: 
         - not _check_vcsa_deploy.stat.exists
 
