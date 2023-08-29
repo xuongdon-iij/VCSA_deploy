@@ -2,8 +2,8 @@
 - name: Switch to root user
   ansible.builtin.shell: sudo -i && VMware1!
 
-- name: Go to deploy folder
-  ansible.builtin.shell: cd /hone/ansible/
+# - name: Go to deploy folder
+#   ansible.builtin.shell: cd /hone/ansible/
 
 - name: Check if VCSA already exists so install steps can be skipped
   ansible.builtin.uri:
