@@ -21,10 +21,11 @@
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      become: yes
-      become_pass: "{{ nested_vc.pass }}"
-      shell: "mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
-      when: 
+      ansible.posix.mount:
+        path: "{{ vcsa_mount }}"
+        src: "{{ vc_iso }}"
+        state: "ephemeral"
+      when:
         - not _check_vcsa_deploy.stat.exists
 
     - name: Create VCSA config file
