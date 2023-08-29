@@ -9,15 +9,15 @@ disk_mode: 'thin'
 
 #Main vCenter
 vc_mng:
-ip: 'vcenter199.lab.local'
-user: 'administrator@vsphere.local' 
-password: 'VMware1!@123'
-datacenter: 'Datacenter'
-cluster: 'IIJVN-vSAN'
-datastore: 'IIJVN-vSAN'
-portgroup: 'Xuong-Trunk'
-folder: '/Datacenter/vm/Xuong'
-resource: 'Xuong'
+  ip: 'vcenter199.lab.local'
+  user: 'administrator@vsphere.local' 
+  password: 'VMware1!@123'
+  datacenter: 'Datacenter'
+  cluster: 'IIJVN-vSAN'
+  datastore: 'IIJVN-vSAN'
+  portgroup: 'Xuong-Trunk'
+  folder: '/Datacenter/vm/Xuong'
+  resource: 'Xuong'
 
 #Nested vCenter
 nested_vc:
