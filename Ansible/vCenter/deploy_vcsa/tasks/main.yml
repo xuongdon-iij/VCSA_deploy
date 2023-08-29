@@ -16,7 +16,7 @@
   when: not vcenter_exists
   block:
     - name: Check VCSA ISO Path Exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ vcsa_mount }}"/vcsa-cli-installer/lin64/vcsa-deploy
       register: _check_vcsa_deploy
 
