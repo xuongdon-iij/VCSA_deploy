@@ -1,6 +1,9 @@
 ---
 - name: Log in with high privilege user
-  ansible.builtin.shell: sudo -i && $NESTED_VC_TOKEN
+  ansible.builtin.shell: sudo -i
+
+- name: Input password
+  ansible.builtin.shell: $NESTED_VC_TOKEN
 
 - name: Check if VCSA already exists so install steps can be skipped
   ansible.builtin.uri:
