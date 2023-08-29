@@ -4,7 +4,7 @@ vcsa_mount: '/home/ansible/ISO/VCSA'
 # esxi_ova: '/root/vsphere/OVA/ESXi.ova'
 # nsxt_ova: '/root/vsphere/OVA/NSX.ova'
 ntp_server: 192.168.138.195
-temp_dir: '/root/vsphere/Resource'
+templates_dir: '/home/ansible/VCSA/templates'
 disk_mode: 'thin'
 
 #Main vCenter
