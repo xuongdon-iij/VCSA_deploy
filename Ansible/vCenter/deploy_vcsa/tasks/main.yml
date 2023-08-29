@@ -28,7 +28,7 @@
     - name: Create VCSA config file
       ansible.builtin.template:
         src: ../templates/vcsa_deploy_on_vc.json.j2
-        dest: ../Deploy-info/xuong-vcsa.json
+        dest: ../templates/xuong-vcsa.json
         mode: '660'
       delegate_to: localhost
 
