@@ -17,21 +17,21 @@
   block:
     - name: Check VCSA ISO Path Exists
       ansible.builtin.stat:
-        path: /home/ansible/ISO/VCSA/vcsa-cli-installer/lin64/vcsa-deploy
+        path: "{{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy"
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      ansible.builtin.shell: mount -o loop {{ vc_iso }} {{ vcsa_mount }}
+      ansible.builtin.shell: mount -o loop "{{ vc_iso }} {{ vcsa_mount }}"
       when: 
         - not _check_vcsa_deploy.stat.exists
 
     - name: Create VCSA config file
       ansible.builtin.template:
         src: ../templates/vcsa_deploy_on_vc.json.j2
-        dest: /home/ansible/templates/xuong-vcsa.json
+        dest: "{{ templates_dir }}/xuong-vcsa.json"
         mode: '660'
       delegate_to: localhost
 
     - name: Deploy VCSA Appliance
-      ansible.builtin.shell: sudo {{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v /home/ansible/templates/xuong-vcsa.json && VMware1!
+      ansible.builtin.shell: {{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v "{{ templates_dir }}/xuong-vcsa.json"
       register: vcenter_result
