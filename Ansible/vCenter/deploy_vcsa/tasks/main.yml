@@ -17,7 +17,7 @@
   block:
     - name: Check VCSA ISO Path Exists
       stat:
-        path: {{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy
+        path: "{{ vcsa_mount }}"/vcsa-cli-installer/lin64/vcsa-deploy
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
