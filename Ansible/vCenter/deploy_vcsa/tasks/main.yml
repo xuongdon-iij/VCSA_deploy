@@ -24,7 +24,7 @@
       ansible.builtin.expect:
         command: "sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
         responses:
-          (?i)password: "{{ nested_vc.pass }}"
+          (?i)password: "VMware1!"
         delegate_to: localhost
       when:
         - not _check_vcsa_deploy.stat.exists
