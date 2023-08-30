@@ -21,11 +21,10 @@
       register: _check_vcsa_deploy
 
     - name: Mount VCSA ISO
-      expect:
+      ansible.builtin.expect:
         command: "sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
         responses:
-          "Password": "VMware1!"
-      delegate_to: localhost
+          (?i)password: "{{ nested_vc.pass }}"
       when:
         - not _check_vcsa_deploy.stat.exists
 
