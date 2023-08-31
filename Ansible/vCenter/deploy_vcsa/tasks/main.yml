@@ -48,7 +48,7 @@
 
     - name: Check if the vSphere API is online
       ansible.builtin.uri:
-        url: "https://{{ nested_vcenter.ip }}/ui/"
+        url: "https://{{ nested_vc.ip }}/ui/"
         method: GET
         status_code: 200
         timeout: 2
