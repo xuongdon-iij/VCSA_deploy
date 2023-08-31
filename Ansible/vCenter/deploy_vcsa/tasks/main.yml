@@ -36,16 +36,15 @@
       delegate_to: localhost
 
     - name: Deploy VCSA Appliance
-      ansible.builtin.shell: cd "{{ vcsa_mount }}/vcsa-cli-installer/lin64/" && ./vcsa-deploy install --accept-eula --no-esx-ssl-verify --no-ssl-certificate-verification --acknowledge-ceip -v "{{ templates_dir }}/xuong-vcsa.json"
+      ansible.builtin.shell: >
+        cd "{{ vcsa_mount }}/vcsa-cli-installer/lin64/" &&
+        ./vcsa-deploy install
+        --accept-eula
+        --no-esx-ssl-verify
+        --no-ssl-certificate-verification
+        --acknowledge-ceip
+        -v "{{ templates_dir }}/xuong-vcsa.json"
       register: vcenter_result
-
-    - name: Result check for deployment of vCenter task
-      ansible.builtin.async_status:
-        jid: "{{ vcenter_result.ansible_job_id }}"
-      register: job_result
-      until: job_result.finished
-      retries: 600
-      delay: 15
 
     - name: Check if the vSphere API is online
       ansible.builtin.uri:
@@ -60,8 +59,8 @@
       until: result_vc_check.content.find("<title>vSphere Client</title>") != -1
       register: result_vc_check
 
-    - ansible.builtin.set_fact:
-        result_vc_exist: "{{ result_vc_check.status == 200 }}"
+    # - ansible.builtin.set_fact:
+    #     result_vc_exist: "{{ result_vc_check.status == 200 }}"
 
     # - name: Unmount VCSA ISO
     #     ansible.builtin.shell: umount "{{ vcsa_mount }}"
