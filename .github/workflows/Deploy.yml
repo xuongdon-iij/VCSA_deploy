@@ -20,5 +20,5 @@ jobs:
       - if: github.event.inputs.Server == 'vCenter'
         name: Run Ansible to deploy vCenter
         run: ansible-playbook Ansible/vCenter/run.yml \
-          -e "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}" \
-          -e "NESTED_VC_TOKEN=${{ secrets.NESTED_VC_TOKEN }}"
+          --extra-vars "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}" \
+          --extra-vars "NESTED_VC_TOKEN=${{ secrets.NESTED_VC_TOKEN }}"
