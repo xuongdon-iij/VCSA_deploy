@@ -1,2 +1,422 @@
 #Resource for deploy
 nsxt_ova: '/home/ansible/OVA/NSX.ova'
+
+nsxt:
+#NSX-T DvSwitch
+  dvswitch:
+    switch_name: 'NSXT-DvSwitch'
+    version: 7.0.3
+    mtu: 7000
+    uplink: 2
+
+#Portgroup
+  portgroup:
+    name: MGMT-NSX-T
+    vlan: 142
+    trunk: false
+    teaming_policy:
+      active_uplinks:
+        - Uplink 1
+        - Uplink 2
+
+#NSX-T manager
+  manager:
+    vm: 'Xuong-NSXT01'
+    disk_mode: 'thin'
+    portgroup: 'Xuong-VL138'
+    deployment_option: medium
+    ip: 192.168.138.141
+    mask: 255.255.255.0
+    gw: 192.168.138.1
+    dns: 192.168.137.200
+    domain: 'lab.local'
+    ntp: '192.168.138.195'
+    hostname: 'xuong-nsxt01.lab.local'
+    username: 'admin'
+    password: ''
+
+#IP Pool
+  ip_pools:
+    display_name: 'IP-Pool01'
+    description: 'Pool01'
+    static_ip_start: 10.10.10.10
+    static_ip_end: 10.10.10.50
+    cidr: '10.10.10.0/24'
+
+#Uplink-Profile
+  uplink_profiles:
+    - display_name: host-uplink-profile
+      teaming:
+        active_list:
+          - uplink_name: "uplink-1"
+            uplink_type: PNIC
+          - uplink_name: "uplink-2"
+            uplink_type: PNIC
+        policy: LOADBALANCE_SRCID
+      transport_vlan: 100
+    - display_name: edge-uplink-profile
+      teaming:
+        active_list:
+          - uplink_name: "uplink-1"
+            uplink_type: PNIC
+          - uplink_name: "uplink-2"
+            uplink_type: PNIC
+        policy: LOADBALANCE_SRCID
+      transport_vlan: 100
+  
+#Transport-Zone
+  transport_zones:
+    - display_name: 'overlay-tz'
+      description: 'overlay'
+      host_switch_name: 'NSXT-DvSwitch'
+      # nested_nsx: true
+      transport_type: OVERLAY_BACKED
+    - display_name: 'vlan-tz'
+      description: 'vlan'
+      host_switch_name: 'NSXT-DvSwitch'
+      # nested_nsx: true
+      transport_type: VLAN_BACKED
+
+#VLAN-Segment
+  vlan_segments:
+    - display_name: 'Segment01'
+      transport_zone_display_name: 'vlan-tz'
+      vlan_ids: '0-4094'
+    - display_name: 'Segment02'
+      transport_zone_display_name: 'vlan-tz'
+      vlan_ids: '0-4094'
+    - display_name: 'To-External-VL1614'
+      transport_zone_display_name: 'vlan-tz'
+      vlan_ids: '1614'
+
+#Overlay-Segment
+  overlay_segments:
+    display_name: 'AVI-Overlay'
+    transport_zone_display_name: 'overlay-tz'
+    subnets: 
+      - gateway_address: '192.168.1.1/24'
+    tier1_display_name: 'T1-AVI'
+
+#Tranport-Node-Profiles
+  transport_node_profiles:
+    display_name: 'Host-profiles'
+    host_switches:
+    - host_switch_profiles:
+        - name: host-uplink-profile
+          type: UplinkHostSwitchProfile
+      host_switch_name: "NSXT-DvSwitch"
+      host_switch_type: VDS
+      host_switch_mode: STANDARD
+      ip_assignment_spec:
+        resource_type: StaticIpPoolSpec
+        ip_pool_name: "IP-Pool01"
+      uplinks:
+      - uplink_name: "uplink-1"
+        vds_uplink_name: Uplink 1
+      - uplink_name: "uplink-2"
+        vds_uplink_name: Uplink 2
+      transport_zone_endpoints:
+      - transport_zone_name: "overlay-tz"
+      - transport_zone_name: "vlan-tz"
+    description: "Cluster node profile"
+
+#Attach-Cluster-TN
+  cluster_attach:
+    description: 'TN-Cluster'
+    compute_manager_name: 'Xuong-VCSA'
+    cluster_name: 'Cluster'
+    transport_node_profile_name: 'Host-profiles'
+
+#Egde-Node
+  edge_nodes:
+    - display_name: Edge01
+      size: SMALL
+      mgmt_ip_address: 192.168.142.200
+      mgmt_prefix_length: 24
+      mgmt_default_gateway: 192.168.142.1
+      dns_servers:
+        - 192.168.137.200
+        - 192.168.137.19
+      hostname: xuong-edge01.lab.local
+      network_management_name: MGMT-NSX-T
+      network_uplink01_name: Segment01
+      network_uplink02_name: Segment02
+      datastore_name: 'iSCSI-Datastore02'
+      cluster_name: 'Cluster'
+      host_switches: 
+        uplink:
+          host_switch_name: 'nsxHostSwitch01'
+          uplink_profile_name: edge-uplink-profile
+          ip_assignment_spec:
+            resource_type: StaticIpPoolSpec
+            ip_pool_name: IP-Pool01
+          transport_zone_endpoints:
+            - transport_zone_name: "overlay-tz"
+            - transport_zone_name: "vlan-tz"
+    - display_name: Edge02
+      size: SMALL
+      mgmt_ip_address: 192.168.142.201
+      mgmt_prefix_length: 24
+      mgmt_default_gateway: 192.168.142.1
+      dns_servers:
+        - 192.168.137.200
+        - 192.168.137.19
+      hostname: xuong-edge02.lab.local
+      network_management_name: MGMT-NSX-T
+      network_uplink01_name: Segment01
+      network_uplink02_name: Segment02
+      datastore_name: 'iSCSI-Datastore02'
+      cluster_name: 'Cluster'
+      host_switches: 
+        uplink:
+          host_switch_name: 'nsxHostSwitch02'
+          uplink_profile_name: edge-uplink-profile
+          ip_assignment_spec:
+            resource_type: StaticIpPoolSpec
+            ip_pool_name: IP-Pool01
+          transport_zone_endpoints:
+            - transport_zone_name: "overlay-tz"
+            - transport_zone_name: "vlan-tz"
+    - display_name: Edge03
+      size: SMALL
+      mgmt_ip_address: 192.168.142.202
+      mgmt_prefix_length: 24
+      mgmt_default_gateway: 192.168.142.1
+      dns_servers:
+        - 192.168.137.200
+        - 192.168.137.19
+      hostname: xuong-edge03.lab.local
+      network_management_name: MGMT-NSX-T
+      network_uplink01_name: Segment01
+      network_uplink02_name: Segment02
+      datastore_name: 'iSCSI-Datastore02'
+      cluster_name: 'Cluster'
+      host_switches: 
+        uplink:
+          host_switch_name: 'nsxHostSwitch03'
+          uplink_profile_name: edge-uplink-profile
+          ip_assignment_spec:
+            resource_type: StaticIpPoolSpec
+            ip_pool_name: IP-Pool01
+          transport_zone_endpoints:
+            - transport_zone_name: "overlay-tz"
+            - transport_zone_name: "vlan-tz"
+    - display_name: Edge04
+      size: SMALL
+      mgmt_ip_address: 192.168.142.203
+      mgmt_prefix_length: 24
+      mgmt_default_gateway: 192.168.142.1
+      dns_servers:
+        - 192.168.137.200
+        - 192.168.137.19
+      hostname: xuong-edge04.lab.local
+      network_management_name: MGMT-NSX-T
+      network_uplink01_name: Segment01
+      network_uplink02_name: Segment02
+      datastore_name: 'iSCSI-Datastore02'
+      cluster_name: 'Cluster'
+      host_switches: 
+        uplink:
+          host_switch_name: 'nsxHostSwitch04'
+          uplink_profile_name: edge-uplink-profile
+          ip_assignment_spec:
+            resource_type: StaticIpPoolSpec
+            ip_pool_name: IP-Pool01
+          transport_zone_endpoints:
+            - transport_zone_name: "overlay-tz"
+            - transport_zone_name: "vlan-tz"
+    - display_name: Edge05
+      size: SMALL
+      mgmt_ip_address: 192.168.142.204
+      mgmt_prefix_length: 24
+      mgmt_default_gateway: 192.168.142.1
+      dns_servers:
+        - 192.168.137.200
+        - 192.168.137.19
+      hostname: xuong-edge05.lab.local
+      network_management_name: MGMT-NSX-T
+      network_uplink01_name: Segment01
+      network_uplink02_name: Segment02
+      datastore_name: 'iSCSI-Datastore02'
+      cluster_name: 'Cluster'
+      host_switches: 
+        uplink:
+          host_switch_name: 'nsxHostSwitch05'
+          uplink_profile_name: edge-uplink-profile
+          ip_assignment_spec:
+            resource_type: StaticIpPoolSpec
+            ip_pool_name: IP-Pool01
+          transport_zone_endpoints:
+            - transport_zone_name: "overlay-tz"
+            - transport_zone_name: "vlan-tz"
+    - display_name: Edge06
+      size: SMALL
+      mgmt_ip_address: 192.168.142.205
+      mgmt_prefix_length: 24
+      mgmt_default_gateway: 192.168.142.1
+      dns_servers:
+        - 192.168.137.200
+        - 192.168.137.19
+      hostname: xuong-edge06.lab.local
+      network_management_name: MGMT-NSX-T
+      network_uplink01_name: Segment01
+      network_uplink02_name: Segment02
+      datastore_name: 'iSCSI-Datastore02'
+      cluster_name: 'Cluster'
+      host_switches: 
+        uplink:
+          host_switch_name: 'nsxHostSwitch06'
+          uplink_profile_name: edge-uplink-profile
+          ip_assignment_spec:
+            resource_type: StaticIpPoolSpec
+            ip_pool_name: IP-Pool01
+          transport_zone_endpoints:
+            - transport_zone_name: "overlay-tz"
+            - transport_zone_name: "vlan-tz"
+
+#Edge-Cluster
+  edge_clusters:
+    - edge_cluster_name: 'Edge-Cluster-GW'
+      description: 'Cluster for GW'
+      edge_cluster_members:
+        - transport_node_name: Edge01
+        - transport_node_name: Edge02
+    - edge_cluster_name: 'Edge-Cluster-MGMT'
+      description: 'Cluster for MGMT'
+      edge_cluster_members:
+        - transport_node_name: Edge03
+        - transport_node_name: Edge04
+    - edge_cluster_name: 'Edge-Cluster-Customers'
+      description: 'Cluster for Customers'
+      edge_cluster_members:
+        - transport_node_name: Edge05
+        - transport_node_name: Edge06
+
+#Tier0
+  tier_0:
+    - display_name: T0-GW
+      ha_mode: 'ACTIVE_STANDBY'
+      # failover_mode: 'PREEMPTIVE'
+      # internal_transit_subnets:
+      static_routes:
+        - state: present
+          display_name: Route-to-External
+          network: '0.0.0.0/0'
+          next_hops:
+            - ip_address: "172.16.14.150"
+      locale_services:
+        - state: present
+          display_name: "T0-GW-Services"
+          route_redistribution_config:
+            bgp_enabled: true
+            redistribution_rules:
+              - name: 'route-redistribution01'
+                route_redistribution_types: ["TIER0_STATIC"]
+              - name: 'route-redistribution02'
+                route_redistribution_types: ["TIER1_NAT"]
+          edge_cluster_info:
+            edge_cluster_display_name: Edge-Cluster-GW
+          interfaces:
+            - display_name: "GW-to-External01-VL1614"
+              state: present
+              subnets:
+                - ip_addresses: ["172.16.14.140"]
+                  prefix_len: 24
+              segment_display_name: "To-External-VL1614"
+              edge_node_info:
+                edge_cluster_display_name: Edge-Cluster-GW
+                edge_node_display_name: Edge01
+            - display_name: "GW-to-External02-VL1614"
+              state: present
+              subnets:
+                - ip_addresses: ["172.16.14.141"]
+                  prefix_len: 24
+              segment_display_name: "To-External-VL1614"
+              edge_node_info:
+                edge_cluster_display_name: Edge-Cluster-GW
+                edge_node_display_name: Edge02
+    - display_name: T0-MGMT
+      ha_mode: 'ACTIVE_STANDBY'
+      # failover_mode: 'PREEMPTIVE'
+      # internal_transit_subnets:
+      static_routes:
+        - state: present
+          display_name: Route-to-External
+          network: '0.0.0.0/0'
+          next_hops:
+            - ip_address: "172.16.14.149"
+      locale_services:
+        - state: present
+          display_name: "T0-MGMT-Services"
+          edge_cluster_info:
+            edge_cluster_display_name: Edge-Cluster-MGMT
+          interfaces:
+            - display_name: "MGMT-to-External01-VL1614"
+              state: present
+              subnets:
+                - ip_addresses: ["172.16.14.143"]
+                  prefix_len: 24
+              segment_display_name: "To-External-VL1614"
+              edge_node_info:
+                edge_cluster_display_name: Edge-Cluster-MGMT
+                edge_node_display_name: Edge03
+            - display_name: "MGMT-to-External02-VL1614"
+              state: present
+              subnets:
+                - ip_addresses: ["172.16.14.144"]
+                  prefix_len: 24
+              segment_display_name: "To-External-VL1614"
+              edge_node_info:
+                edge_cluster_display_name: Edge-Cluster-MGMT
+                edge_node_display_name: Edge04
+    - display_name: T0-Parent
+      ha_mode: 'ACTIVE_STANDBY'
+      # failover_mode: 'PREEMPTIVE'
+      # internal_transit_subnets:
+      locale_services:
+        - state: present
+          display_name: "T0-Parent-Services"
+          edge_cluster_info:
+            edge_cluster_display_name: Edge-Cluster-Customers
+
+#VIP_IP
+  vip_ip:
+    - display_name: T0-GW
+      ha_mode: 'ACTIVE_STANDBY'
+      locale_services:
+        - state: present
+          display_name: "T0-GW-Services"
+          ha_vip_configs:
+            - external_interface_info:
+              - display_name: "GW-to-External01-VL1614"
+              - display_name: "GW-to-External02-VL1614"
+              vip_subnets:
+              - ip_addresses: ["172.16.14.142"]
+                prefix_len: 24
+    - display_name: T0-MGMT
+      ha_mode: 'ACTIVE_STANDBY'
+      locale_services:
+        - state: present
+          display_name: "T0-MGMT-Services"
+          ha_vip_configs:
+            - external_interface_info:
+              - display_name: "MGMT-to-External01-VL1614"
+              - display_name: "MGMT-to-External02-VL1614"
+              vip_subnets:
+              - ip_addresses: ["172.16.14.145"]
+                prefix_len: 24
+
+#Tier_1
+  tier_1:
+    display_name: T1-AVI
+    state: present
+    # failover_mode:
+    # route_advertisement_rules:
+    route_advertisement_types:
+      - "TIER1_NAT"
+    locale_services:
+      - state: present
+        display_name: 'T1-AVI-Services'
+        edge_cluster_info:
+          edge_cluster_display_name: Edge-Cluster-MGMT
+    tier0_display_name: T0-MGMT
