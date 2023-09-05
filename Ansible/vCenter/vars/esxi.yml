@@ -1,5 +1,6 @@
 #Resource for deploy
 esxi_ova: '/home/ansible/OVA/ESXi.ova'
+esxi_password: ''
 
 #Nested host info
 nested_hosts:
@@ -11,7 +12,6 @@ nested_hosts:
     dns: '192.168.137.200'
     gw: '192.168.138.1'
     domain: 'lab.local'
-    pass: 'VMware1!'
     dvswitch: 'Xuong-DSwitch'
     MGMT_PG: 'Management'
   - ESXI02:
@@ -22,7 +22,6 @@ nested_hosts:
     dns: '192.168.137.200'
     gw: '192.168.138.1'
     domain: 'lab.local'
-    pass: 'VMware1!'
     dvswitch: 'Xuong-DSwitch'
     MGMT_PG: 'Management'
   - ESXI03:
@@ -33,6 +32,5 @@ nested_hosts:
     dns: '192.168.137.200'
     gw: '192.168.138.1'
     domain: 'lab.local'
-    pass: 'VMware1!'
     dvswitch: 'Xuong-DSwitch'
     MGMT_PG: 'Management'
