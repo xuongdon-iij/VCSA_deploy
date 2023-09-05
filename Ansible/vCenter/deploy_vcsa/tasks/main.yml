@@ -64,7 +64,7 @@
 
 - name: Show var
   debug:
-    var: {{ nested_vc.pass }}
+    var: "{{ nested_vc.pass }}"
 
 - name: Unmount VCSA ISO
   ansible.builtin.expect:
