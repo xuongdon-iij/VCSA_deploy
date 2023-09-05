@@ -8,7 +8,7 @@ on:
              required: true
              options:
              - vCenter
-             - ESXi
+             - ESXi host
              - NSX-T
 jobs:    
     build:
