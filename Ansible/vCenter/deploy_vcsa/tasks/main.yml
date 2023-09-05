@@ -62,10 +62,6 @@
     - ansible.builtin.set_fact:
         result_vc_exists: "{{ result_vc_check.status == 200 }}"
     
-    - name: Show var
-      debug:
-        var: "{{ nested_vc.pass }}"
-    
     - name: Unmount VCSA ISO
       ansible.builtin.expect:
         command: "sudo umount {{ vcsa_mount }}"
