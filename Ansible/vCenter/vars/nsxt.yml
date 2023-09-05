@@ -1,0 +1,2 @@
+#Resource for deploy
+nsxt_ova: '/home/ansible/OVA/NSX.ova'
