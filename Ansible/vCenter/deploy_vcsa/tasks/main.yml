@@ -59,9 +59,12 @@
       until: result_vc_check.content.find("<title>vSphere Client</title>") != -1
       register: result_vc_check
 
-    # - ansible.builtin.set_fact:
-    #     result_vc_exist: "{{ result_vc_check.status == 200 }}"
+    - ansible.builtin.set_fact:
+        result_vc_exist: "{{ result_vc_check.status == 200 }}"
 
-    # - name: Unmount VCSA ISO
-    #     ansible.builtin.shell: umount "{{ vcsa_mount }}"
-    #   when: result_vc_exists
+    - name: Mount VCSA ISO
+      ansible.builtin.expect:
+        command: "sudo umount {{ vcsa_mount }}"
+        responses:
+          (?i)password: "nested_vc.pass"
+      when: result_vc_exists
