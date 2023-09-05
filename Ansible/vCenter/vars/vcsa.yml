@@ -1,8 +1,6 @@
 #Resource for deploy
 vc_iso: '/home/ansible/ISO/VCSA.iso'
 vcsa_mount: '/home/ansible/ISO/VCSA'
-# esxi_ova: '/root/vsphere/OVA/ESXi.ova'
-# nsxt_ova: '/root/vsphere/OVA/NSX.ova'
 ntp_server: 192.168.138.195
 templates_dir: '/home/ansible/templates'
 disk_mode: 'thin'
