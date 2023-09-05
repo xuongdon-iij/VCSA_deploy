@@ -1,70 +1,70 @@
 ---
-- name: Check if VCSA already exists so install steps can be skipped
+# - name: Check if VCSA already exists so install steps can be skipped
+#   ansible.builtin.uri:
+#     url: "https://{{ nested_vc.ip }}/ui/"
+#     method: GET
+#     status_code: 200
+#     timeout: 2
+#     validate_certs: false
+#   ignore_errors: true
+#   register: vcenter_response
+
+# - ansible.builtin.set_fact:
+#     vcenter_exists: "{{ vcenter_response.status == 200 }}"
+
+# - name: Install vCenter and configure tasks
+#   when: not vcenter_exists
+#   block:
+#     - name: Check VCSA ISO Path Exists
+#       ansible.builtin.stat:
+#         path: "{{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy"
+#       register: _check_vcsa_deploy
+
+#     - name: Mount VCSA ISO
+#       ansible.builtin.expect:
+#         command: "sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
+#         responses:
+#           (?i)password: "nested_vc.pass"
+#       when:
+#         - not _check_vcsa_deploy.stat.exists
+
+#     - name: Create VCSA config file
+#       ansible.builtin.template:
+#         src: ../templates/vcsa_deploy_on_vc.json.j2
+#         dest: "{{ templates_dir }}/xuong-vcsa.json"
+#         mode: '660'
+#       delegate_to: localhost
+
+#     - name: Deploy VCSA Appliance
+#       ansible.builtin.shell: >
+#         cd "{{ vcsa_mount }}/vcsa-cli-installer/lin64/" &&
+#         ./vcsa-deploy install
+#         --accept-eula
+#         --no-esx-ssl-verify
+#         --no-ssl-certificate-verification
+#         --acknowledge-ceip
+#         -v "{{ templates_dir }}/xuong-vcsa.json"
+#       register: vcenter_result
+
+- name: Check if the vSphere API is online
   ansible.builtin.uri:
     url: "https://{{ nested_vc.ip }}/ui/"
     method: GET
     status_code: 200
     timeout: 2
     validate_certs: false
-  ignore_errors: true
-  register: vcenter_response
+    return_content: true
+  retries: 60
+  delay: 10
+  until: result_vc_check.content.find("<title>vSphere Client</title>") != -1
+  register: result_vc_check
 
 - ansible.builtin.set_fact:
-    vcenter_exists: "{{ vcenter_response.status == 200 }}"
+    result_vc_exists: "{{ result_vc_check.status == 200 }}"
 
-- name: Install vCenter and configure tasks
-  when: not vcenter_exists
-  block:
-    - name: Check VCSA ISO Path Exists
-      ansible.builtin.stat:
-        path: "{{ vcsa_mount }}/vcsa-cli-installer/lin64/vcsa-deploy"
-      register: _check_vcsa_deploy
-
-    - name: Mount VCSA ISO
-      ansible.builtin.expect:
-        command: "sudo mount -o loop {{ vc_iso }} {{ vcsa_mount }}"
-        responses:
-          (?i)password: "nested_vc.pass"
-      when:
-        - not _check_vcsa_deploy.stat.exists
-
-    - name: Create VCSA config file
-      ansible.builtin.template:
-        src: ../templates/vcsa_deploy_on_vc.json.j2
-        dest: "{{ templates_dir }}/xuong-vcsa.json"
-        mode: '660'
-      delegate_to: localhost
-
-    - name: Deploy VCSA Appliance
-      ansible.builtin.shell: >
-        cd "{{ vcsa_mount }}/vcsa-cli-installer/lin64/" &&
-        ./vcsa-deploy install
-        --accept-eula
-        --no-esx-ssl-verify
-        --no-ssl-certificate-verification
-        --acknowledge-ceip
-        -v "{{ templates_dir }}/xuong-vcsa.json"
-      register: vcenter_result
-
-    - name: Check if the vSphere API is online
-      ansible.builtin.uri:
-        url: "https://{{ nested_vc.ip }}/ui/"
-        method: GET
-        status_code: 200
-        timeout: 2
-        validate_certs: false
-        return_content: true
-      retries: 60
-      delay: 10
-      until: result_vc_check.content.find("<title>vSphere Client</title>") != -1
-      register: result_vc_check
-
-    - ansible.builtin.set_fact:
-        result_vc_exists: "{{ result_vc_check.status == 200 }}"
-
-    - name: Mount VCSA ISO
-      ansible.builtin.expect:
-        command: "sudo umount {{ vcsa_mount }}"
-        responses:
-          (?i)password: "nested_vc.pass"
-      when: result_vc_exists
+- name: Unmount VCSA ISO
+  ansible.builtin.expect:
+    command: "sudo umount {{ vcsa_mount }}"
+    responses:
+      (?i)password: "nested_vc.pass"
+  when: result_vc_exists
