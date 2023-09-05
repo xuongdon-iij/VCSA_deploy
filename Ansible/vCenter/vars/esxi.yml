@@ -1,2 +1,38 @@
 #Resource for deploy
 esxi_ova: '/home/ansible/OVA/ESXi.ova'
+
+#Nested host info
+nested_hosts:
+  - ESXI01:
+    vm: 'Xuong-ESXi01'
+    hostname: 'xuong-esxi01.lab.local'
+    ip: '192.168.138.140'
+    mask: '255.255.255.0'
+    dns: '192.168.137.200'
+    gw: '192.168.138.1'
+    domain: 'lab.local'
+    pass: 'VMware1!'
+    dvswitch: 'Xuong-DSwitch'
+    MGMT_PG: 'Management'
+  - ESXI02:
+    vm: 'Xuong-ESXi02'
+    hostname: 'xuong-esxi02.lab.local'
+    ip: '192.168.138.144'
+    mask: '255.255.255.0'
+    dns: '192.168.137.200'
+    gw: '192.168.138.1'
+    domain: 'lab.local'
+    pass: 'VMware1!'
+    dvswitch: 'Xuong-DSwitch'
+    MGMT_PG: 'Management'
+  - ESXI03:
+    vm: 'Xuong-ESXi03'
+    hostname: 'xuong-esxi03.lab.local'
+    ip: '192.168.138.142'
+    mask: '255.255.255.0'
+    dns: '192.168.137.200'
+    gw: '192.168.138.1'
+    domain: 'lab.local'
+    pass: 'VMware1!'
+    dvswitch: 'Xuong-DSwitch'
+    MGMT_PG: 'Management'
