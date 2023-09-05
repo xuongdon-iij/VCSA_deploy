@@ -4,7 +4,7 @@ on:
         inputs:
           Server:
              type: choice
-             description: 'Server: '
+             description: 'Server:'
              required: true
              options:
              - vCenter
