@@ -60,7 +60,7 @@
       register: result_vc_check
 
     - ansible.builtin.set_fact:
-        result_vc_exist: "{{ result_vc_check.status == 200 }}"
+        result_vc_exists: "{{ result_vc_check.status == 200 }}"
 
     - name: Mount VCSA ISO
       ansible.builtin.expect:
