@@ -1,0 +1,2 @@
+#Resource for deploy
+esxi_ova: '/home/ansible/OVA/ESXi.ova'
