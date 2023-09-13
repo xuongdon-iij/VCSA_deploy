@@ -1,5 +1,14 @@
 name: Deploy on separate environments
-on: workflow_dispatch
+on: 
+    workflow_dispatch:
+        inputs:
+          Environments:
+             type: choice
+             description: 'Environments:'
+             required: true
+             options:
+             - staging
+             - production
 jobs:
     build:
       runs-on: [self-hosted]
@@ -10,5 +19,6 @@ jobs:
       - name: Run Ansible to deploy vCenter
         run: >
             ansible-playbook
+            -e "user_input=${{ github.event.inputs.Environments }}"
             -i Ansible/Deploy_envinronments/inventory/inventory.ini
             Ansible/Deploy_envinronments/run.yml
