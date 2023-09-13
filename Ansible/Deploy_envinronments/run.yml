@@ -1,0 +1,10 @@
+---
+- name: Deploy VM with environments
+  hosts: staging
+  gather_facts: no
+  vars_files:
+    inventory/group_vars/resource.yml
+  tasks:
+    - name: Deploy VM
+      include_role:
+          role: deploy_environments
