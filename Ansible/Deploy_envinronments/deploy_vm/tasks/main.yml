@@ -1,0 +1,2 @@
+---
+- import_tasks: deploy_vm.yml
