@@ -6,7 +6,7 @@
     password: "{{ xuong_host_password }}"
     name: "{{ inventory_hostname_short }}"
     template: "{{ xuong_host_template }}"
-    state: poweredon
+    state: present
     cluster: "{{ xuong_host_cluster }}"
     datacenter: "{{ xuong_host_datacenter }}"
     folder: "{{ xuong_host_folder }}"
