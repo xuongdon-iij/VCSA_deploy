@@ -1,5 +1,5 @@
 ---
-deploy_environment_type: staging
+deploy_environment_type: "{{ user_input }}"
 deploy_environment:
   staging:
     hostname: 'vcenter199.lab.local'
