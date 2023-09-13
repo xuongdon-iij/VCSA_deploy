@@ -2,4 +2,4 @@
 #general
 dns_server: 192.168.137.200
 ntp_server: 192.168.138.195
-vm_password: 'VMware1!'
+vm_password: '{{ NESTED_VC_TOKEN }}'
