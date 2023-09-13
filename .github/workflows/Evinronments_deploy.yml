@@ -9,5 +9,6 @@ jobs:
        
       - name: Run Ansible to deploy vCenter
         run: >
-            ansible-playbook -i Deploy_environments/inventory/inventory.ini
-            Deploy_environments/run.yml
+            ansible-playbook
+            -i Ansible/Deploy_environments/inventory/inventory.ini
+            Ansible/Deploy_environments/run.yml
