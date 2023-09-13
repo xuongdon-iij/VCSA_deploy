@@ -1,0 +1,20 @@
+---
+#vCenter
+xuong_host_hostname: '{{ deploy_environment[deploy_environment_type].hostname }}'
+xuong_host_username: '{{ deploy_environment[deploy_environment_type].username }}'
+xuong_host_password: '{{ deploy_environment[deploy_environment_type].password }}'
+xuong_host_datacenter: '{{ deploy_environment[deploy_environment_type].datacenter }}'
+xuong_host_cluster: '{{ deploy_environment[deploy_environment_type].cluster }}'
+xuong_host_folder: '{{ deploy_environment[deploy_environment_type].folder }}'
+xuong_host_resource_pool: '{{ deploy_environment[deploy_environment_type].resource_pool }}'
+xuong_host_datastore: '{{ deploy_environment[deploy_environment_type].datastore }}'
+xuong_host_portgroup: '{{ portgroup[deploy_environment_type] }}'
+portgroup:
+  staging: 'Xuong-VL138'
+  production: 'Xuong-VL142'
+xuong_host_template: 'Xuong-TemplateWin2022'
+xuong_host_hardware:
+  num_cpus: 2
+  hotadd_cpu: true
+  hotadd_memory: true
+  memory_mb: 4096
