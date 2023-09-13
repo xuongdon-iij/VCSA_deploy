@@ -4,7 +4,7 @@ deploy_environment:
   staging:
     hostname: 'vcenter199.lab.local'
     username: 'administrator@vsphere.local'
-    password: 'VMware1!@123'
+    password: '{{ VCENTER_TOKEN }}'
     datacenter: 'Datacenter'
     cluster: 'IIJVN-vSAN'
     folder: 'Datacenter/vm/Xuong'
@@ -13,7 +13,7 @@ deploy_environment:
   production:
     hostname: 'vcenter199.lab.local'
     username: 'administrator@vsphere.local'
-    password: 'VMware1!@123'
+    password: '{{ VCENTER_TOKEN }}'
     datacenter: 'Datacenter'
     cluster: 'IIJVN-vSAN'
     folder: 'Datacenter/vm/Xuong'
