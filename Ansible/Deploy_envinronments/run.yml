@@ -2,6 +2,10 @@
 - name: Deploy VM with environments
   hosts: "{{ user_input }}"
   gather_facts: no
+  vars_prompt:
+    - name: user_input
+      prompt: Enter the environment staging or production?
+      private: false
   vars_files:
     inventory/group_vars/resource.yml
   tasks:
