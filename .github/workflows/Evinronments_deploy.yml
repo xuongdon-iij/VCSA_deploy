@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
        
-      - name: Run Ansible to deploy vCenter
+      - name: Run Ansible to VM of selected evironment
         run: >
             ansible-playbook
             -e "user_input=${{ github.event.inputs.Environments }}"
