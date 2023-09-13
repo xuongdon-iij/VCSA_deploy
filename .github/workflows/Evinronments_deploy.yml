@@ -1,0 +1,13 @@
+name: Deploy on separate environments
+on: workflow_dispatch
+jobs:
+    build:
+      runs-on: [self-hosted]
+      steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+       
+      - name: Run Ansible to deploy vCenter
+        run: >
+            ansible-playbook -i Deploy_environments/inventory/inventory.ini
+            Deploy_environments/run.yml
