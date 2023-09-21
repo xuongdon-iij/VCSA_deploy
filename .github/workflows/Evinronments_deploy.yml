@@ -37,8 +37,8 @@ jobs:
       - name: Run Ansible to VM of selected evironment
         if: ${{ github.event.inputs.Environments == 'staging' || success() }}
         run: |
-            if [[ "${{ github.event.inputs.Environment }}" == "staging" || "${{ github.event.inputs.Environment }}" == "production" ]]; then
-                echo "Deploying to ${{ github.event.inputs.Environment }} environment..."
+            if [[ "${{ github.event.inputs.Environments }}" == "staging" || "${{ github.event.inputs.Environments }}" == "production" ]]; then
+                echo "Deploying to ${{ github.event.inputs.Environments }} environment..."
                 ansible-playbook \
                 -e "user_input=${{ github.event.inputs.Environments }}" \
                 -e "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}" \
