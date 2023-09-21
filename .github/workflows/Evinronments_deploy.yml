@@ -15,13 +15,30 @@ jobs:
       steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+
+      - name: Request Deployment Approval
+        id: approval
+        if: ${{ github.event.inputs.Environment == 'production' }}
+        uses: ./.github/actions/approval
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          environment: ${{ github.event.inputs.Environment }}
        
       - name: Run Ansible to VM of selected evironment
-        run: >
-            ansible-playbook
-            -e "user_input=${{ github.event.inputs.Environments }}"
-            -e "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}"
-            -e "NESTED_VC_TOKEN=${{ secrets.NESTED_VC_TOKEN }}"
-            -e "SEFL_HOST_TOKEN=${{ secrets.SEFL_HOST_TOKEN }}"
-            -i Ansible/Deploy_envinronments/inventory/inventory.ini
-            Ansible/Deploy_envinronments/run.yml
+        run: |
+            if [[ "${{ github.event.inputs.Environments }}" == "staging" ]]; then
+                echo "Deploying to staging environment..."
+                ansible-playbook \
+                -e "user_input=${{ github.event.inputs.Environments }}" \
+                -e "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}" \
+                -e "NESTED_VC_TOKEN=${{ secrets.NESTED_VC_TOKEN }}" \
+                -e "SEFL_HOST_TOKEN=${{ secrets.SEFL_HOST_TOKEN }}" \
+                -i Ansible/Deploy_envinronments/inventory/inventory.ini \
+                Ansible/Deploy_envinronments/run.yml
+            else
+                if [[ "${{ steps.approval.outputs.status }}" == "approval_requested" ]]; then
+                  echo "Waiting for approval..."
+                else
+                  echo "Deployment to production requires approval. Skipping deployment."
+                fi
+            fi
