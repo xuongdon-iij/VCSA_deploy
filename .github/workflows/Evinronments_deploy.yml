@@ -22,7 +22,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             # Replace with the GitHub username of the user you want to request a review from
-            review_user="xuongdon-iij"
+            review_user="xuong.don@ap.iij.com"
             
             # Use the GitHub API to request a review from the specified user
             curl -X POST \
