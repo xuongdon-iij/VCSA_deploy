@@ -1,0 +1,9 @@
+name: Ansible Deploy Servers
+on: workflow_dispatch:
+jobs:    
+    build:
+      runs-on: [self-hosted]
+      steps:
+      - name: Get Pull Request Number
+        id: get_pr_number
+        run: echo "Pull Request Number: ${{ github.event.pull_request.number }}"
