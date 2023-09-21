@@ -18,7 +18,7 @@ jobs:
 
       - name: Request Deployment Approval
         id: approval
-        if: ${{ github.event.inputs.Environment == 'production' }}
+        if: ${{ github.event.inputs.Environments == 'production' }}
         uses: ./.github/actions/approval
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
