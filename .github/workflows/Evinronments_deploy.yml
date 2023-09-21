@@ -17,22 +17,19 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Request Deployment Approval
-        if: ${{ github.event.inputs.Environments == 'production' }}
+        if: ${{ github.event.inputs.Environment == 'production' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Replace with the actual pull request number where you want to request the review
-          pr_number="${{ github.event.inputs.PullRequestNumber }}"
-          
-          # Replace with the GitHub username of the user you want to request a review from
-          review_user="xuongdon-iij"
-          
-          # Use the GitHub API to request a review from the specified user
-          curl -X POST \
-            -H "Authorization: token ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/main/pulls/${pr_number}/requested_reviewers" \
-            -d "{\"reviewers\":[\"${review_user}\"]}"
+            # Replace with the GitHub username of the user you want to request a review from
+            review_user="xuongdon-iij"
+            
+            # Use the GitHub API to request a review from the specified user
+            curl -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${GITHUB_PULL_REQUEST}/requested_reviewers" \
+              -d "{\"reviewers\":[\"${review_user}\"]}"
        
       - name: Run Ansible to VM of selected evironment
         if: ${{ github.event.inputs.Environments == 'staging' || success() }}
