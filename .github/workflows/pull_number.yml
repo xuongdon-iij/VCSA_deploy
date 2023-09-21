@@ -1,5 +1,5 @@
-name: Ansible Deploy Servers
-on: workflow_dispatch:
+name: Get pull number
+on: workflow_dispatch
 jobs:    
     build:
       runs-on: [self-hosted]
