@@ -6,4 +6,9 @@ jobs:
       steps:
       - name: Get Pull Request Number
         id: get_pr_number
-        run: echo "Pull Request Number: ${{ github.event.pull_request.number }}"
+        run: |
+            if [[ -n "${{ github.event.pull_request }}" ]]; then
+              echo "Pull Request Number: ${{ github.event.pull_request.number }}"
+            else
+              echo "Not a pull request event."
+            fi
