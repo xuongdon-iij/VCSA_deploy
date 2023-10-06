@@ -39,7 +39,7 @@ jobs:
   #         fi
 
   Deploy:
-    needs: Approve
+    # needs: Approve
     runs-on: [self-hosted]
     steps:
       - name: Checkout Repository
