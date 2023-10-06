@@ -31,12 +31,11 @@ jobs:
         - name: Request Approval for Production Environment
           if: ${{ github.event.inputs.Environments == 'production' }}
           run: |
-            # Get the username of the user who triggered the workflow
-            REQUESTED_USER="${{ github.actor }}"
-        
             # Get the pull request number for the current workflow run
-            PR_NUMBER=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | jq -r '.[].pull_requests[0].number')
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+        
+            # Request approval from the user who triggered the workflow
+            REQUESTED_USER="${{ github.actor }}"
         
             # Create a review request using the GitHub API
             RESPONSE=$(curl -X POST -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
