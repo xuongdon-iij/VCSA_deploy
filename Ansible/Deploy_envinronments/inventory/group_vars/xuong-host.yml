@@ -12,7 +12,7 @@ xuong_host_portgroup: '{{ portgroup[deploy_environment_type] }}'
 portgroup:
   staging: 'Xuong-VL138'
   production: 'Xuong-VL142'
-xuong_host_template: 'thanhduong-TemplateWindows'
+xuong_host_template: 'Xuong-TemplateWin2019'
 xuong_host_hardware:
   num_cpus: 2
   hotadd_cpu: true
