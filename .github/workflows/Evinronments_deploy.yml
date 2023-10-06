@@ -47,7 +47,6 @@ jobs:
       
       - name: Run Ansible to VM of selected environment
         run: |
-          echo "Deploying to ${{ github.event.inputs.Environments }} environment..."
           ansible-playbook \
           -e "user_input=${{ github.event.inputs.Environments }}" \
           -e "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}" \
