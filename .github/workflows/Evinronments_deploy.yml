@@ -1,51 +1,58 @@
 name: Deploy on separate environments
-on: 
-    workflow_dispatch:
-        inputs:
-          Environments:
-             type: choice
-             description: 'Environments:'
-             required: true
-             options:
-             - staging
-             - production
-jobs:
-    build:
-      runs-on: [self-hosted]
-      steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v2
 
-        # Add a conditional approval step for 'production' environment
-        - name: Request Approval for Production Environment
-          if: ${{ github.event.inputs.Environments == 'production' }}
-          run: |
-            # Get the pull request number for the current workflow run
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-        
-            # Request approval from the user who triggered the workflow
-            REQUESTED_USER="${{ github.actor }}"
-        
-            # Create a review request using the GitHub API
-            RESPONSE=$(curl -X POST -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              -d "{\"event\": \"REQUEST_REVIEWER\", \"reviewers\": [\"$REQUESTED_USER\"]}" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers")
-        
-            # Check the response for success or error handling
-            if [ "$(echo "$RESPONSE" | jq -r '.message')" == "Created" ]; then
-              echo "Approval requested for $REQUESTED_USER in the 'production' environment."
-            else
-              echo "Failed to request approval. Error: $(echo "$RESPONSE" | jq -r '.message')"
-              exit 1
-            fi
-       
-        - name: Run Ansible to VM of selected evironment
-          run: |
-            echo "Deploying to ${{ github.event.inputs.Environments }} environment..."
-            ansible-playbook \
-            -e "user_input=${{ github.event.inputs.Environments }}" \
-            -e "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}" \
-            -e "NESTED_VC_TOKEN=${{ secrets.NESTED_VC_TOKEN }}" \
-            -e "SEFL_HOST_TOKEN=${{ secrets.SEFL_HOST_TOKEN }}" \
-            -i Ansible/Deploy_envinronments/inventory/inventory.ini \
-            Ansible/Deploy_envinronments/run.yml
+on:
+  workflow_dispatch:
+    inputs:
+      Environments:
+        type: choice
+        description: 'Environments:'
+        required: true
+        options:
+          - staging
+          - production
+
+jobs:
+  Approve:
+    runs-on: ubuntu-latest  # Use a valid runner type
+    steps:
+      # Add a conditional approval step for 'production' environment
+      - name: Request Approval for Production Environment
+        if: ${{ github.event.inputs.Environments == 'production' }}
+        run: |
+          # Get the pull request number for the current workflow run
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          # Request approval from the user who triggered the workflow
+          REQUESTED_USER="${{ github.actor }}"
+
+          # Create a review request using the GitHub API
+          RESPONSE=$(curl -X POST -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -d "{\"event\": \"REQUEST_REVIEWER\", \"reviewers\": [\"$REQUESTED_USER\"]}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers")
+
+          # Check the response for success or error handling
+          if [ "$(echo "$RESPONSE" | jq -r '.message')" == "Created" ]; then
+            echo "Approval requested for $REQUESTED_USER in the 'production' environment."
+          else
+            echo "Failed to request approval. Error: $(echo "$RESPONSE" | jq -r '.message')"
+            exit 1
+          fi
+
+  Deploy:
+    needs: Approve
+    runs-on: [self-hosted]  # Use a valid runner type
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
+      - name: Run Ansible to VM of selected environment
+        run: |
+          echo "Deploying to ${{ github.event.inputs.Environments }} environment..."
+          ansible-playbook \
+          -e "user_input=${{ github.event.inputs.Environments }}" \
+          -e "VCENTER_TOKEN=${{ secrets.VCENTER_TOKEN }}" \
+          -e "NESTED_VC_TOKEN=${{ secrets.NESTED_VC_TOKEN }}" \
+          -e "SEFL_HOST_TOKEN=${{ secrets.SEFL_HOST_TOKEN }}" \
+          -i Ansible/Deploy_environments/inventory/inventory.ini \
+          Ansible/Deploy_environments/run.yml
