@@ -12,34 +12,34 @@ on:
           - production
 
 jobs:
-  # Approve:
-  #   runs-on: ubuntu-latest  # Use a valid runner type
-  #   steps:
-  #     # Add a conditional approval step for 'production' environment
-  #     - name: Request Approval for Production Environment
-  #       if: ${{ github.event.inputs.Environments == 'production' }}
-  #       run: |
-  #         # Get the pull request number for the current workflow run
-  #         PR_NUMBER="${{ github.event.pull_request.number }}"
-
-  #         # Request approval from the user who triggered the workflow
-  #         REQUESTED_USER="${{ github.actor }}"
-
-  #         # Create a review request using the GitHub API
-  #         RESPONSE=$(curl -X POST -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-  #           -d "{\"event\": \"REQUEST_REVIEWER\", \"reviewers\": [\"$REQUESTED_USER\"]}" \
-  #           "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers")
-
-  #         # Check the response for success or error handling
-  #         if [ "$(echo "$RESPONSE" | jq -r '.message')" == "Created" ]; then
-  #           echo "Approval requested for $REQUESTED_USER in the 'production' environment."
-  #         else
-  #           echo "Failed to request approval. Error: $(echo "$RESPONSE" | jq -r '.message')"
-  #           exit 1
-  #         fi
+  Approve:
+    runs-on: ubuntu-latest  # Use a valid runner type
+    steps:
+      # Add a conditional approval step for 'production' environment
+      - name: Request Approval for Production Environment
+        if: ${{ github.event.inputs.Environments == 'production' }}
+        run: |
+          # Get the pull request number for the current workflow run
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
+          # Specify the GitHub username of the user you want to request the review from
+          REQUESTED_USER="xuongdon-iij"
+          
+          # Create a review request using the GitHub API
+          RESPONSE=$(curl -X POST -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -d "{\"event\": \"REQUEST_REVIEWER\", \"reviewers\": [\"$REQUESTED_USER\"]}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers")
+            
+          # Check the response for success or error handling
+          if [ "$(echo "$RESPONSE" | jq -r '.message')" == "Created" ]; then
+            echo "Approval requested for $REQUESTED_USER in the 'production' environment."
+          else
+            echo "Failed to request approval. Error: $(echo "$RESPONSE" | jq -r '.message')"
+            exit 1
+          fi
 
   Deploy:
-    # needs: Approve
+    needs: Approve
     runs-on: [self-hosted]
     steps:
       - name: Checkout Repository
