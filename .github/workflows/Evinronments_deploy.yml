@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Run Ansible to VM of selected environment
-        working-directory: Ansible/Deploy_envinronments
+        working-directory: Ansible/Deploy_envinronments/
         run: |
           ansible-playbook \
           -e "user_input=${{ github.event.inputs.Environments }}" \
