@@ -1,8 +1,6 @@
 name: Manual Workflow with Review and Approval
 
-on:
-  workflow_dispatch:
-
+on: workflow_dispatch
 jobs:
   review_and_approve:
     runs-on: ubuntu-latest
