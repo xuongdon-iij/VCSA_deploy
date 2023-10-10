@@ -46,7 +46,6 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Run Ansible to VM of selected environment
-        working-directory: Ansible/Deploy_envinronments/
         run: |
           ansible-playbook \
           -e "user_input=${{ github.event.inputs.Environments }}" \
@@ -54,4 +53,4 @@ jobs:
           -e "NESTED_VC_TOKEN=${{ secrets.NESTED_VC_TOKEN }}" \
           -e "SEFL_HOST_TOKEN=${{ secrets.SEFL_HOST_TOKEN }}" \
           -i Ansible/Deploy_environments/inventory/inventory.ini \
-          run.yml
+          Ansible/Deploy_envinronments/run.yml
