@@ -1,15 +1,25 @@
-name: Get pull number
-on: workflow_dispatch
-jobs:    
-    build:
-      runs-on: [self-hosted]
-      steps:
-      - name: Get Pull Request Number
-        id: get_pr_number
+name: Manual Workflow with Review and Approval
+
+on:
+  workflow_dispatch:
+
+jobs:
+  review_and_approve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Your Workflow Steps
         run: |
-            if [[ -n "${{ github.event.pull_request.number }}" ]]; then
-              echo "Pull Request Number: ${{ github.event.pull_request.number }}"
-            else
-              echo "Pull Request Number not available. Using default."
-              echo "::set-output name=PR_NUMBER::default_value"
-            fi
+          # Add your workflow steps here.
+
+  wait_for_approval:
+    needs: [review_and_approve]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Manual Approval
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        run: |
+          echo "This step will be executed when the previous workflow step is successful."
+          echo "You can add your logic here for notifications or further processing."
