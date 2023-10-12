@@ -7,9 +7,7 @@ on:
         type: environment
         description: 'Environments:'
         required: true
-        options:
-          - staging
-          - production
+        default: 'staging'
 
 jobs:
   Deploy:
