@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       Environments:
+        type: environment
         description: 'Environments:'
         required: true
         default: 'staging'
-        type: environment
 
 jobs:
   Deploy:
