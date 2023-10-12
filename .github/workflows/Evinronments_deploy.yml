@@ -12,6 +12,7 @@ on:
 jobs:
   Deploy:
     runs-on: [self-hosted]
+    environment: "${{ github.event.inputs.Environments }}"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
