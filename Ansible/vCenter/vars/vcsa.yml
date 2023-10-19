@@ -7,7 +7,7 @@ disk_mode: 'thin'
 
 #Main vCenter
 vc_mng:
-  ip: '{{ VCENTER_199 }}'
+  ip: 'vcenter199.lab.local'
   user: 'administrator@vsphere.local' 
   password: '{{ VCENTER_TOKEN }}'
   datacenter: 'Datacenter'
@@ -22,7 +22,7 @@ nested_vc:
   portgroup: 'Xuong-VL138'
   type: 'tiny'
   vm: 'Xuong-VCSA'
-  hostname: '{{ NESTED_VC }}'
+  hostname: 'xuong-vcsa.lab.local'
   username: 'administrator@vsphere.local'
   datacenter: 'Datacenter'
   cluster: 'Cluster'
